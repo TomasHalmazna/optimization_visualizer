@@ -357,10 +357,10 @@ end
     end
 end
 
-@get "/{path...}" function(path)
-    # Handle static files (CSS, JS, etc.)
+# Helper function to serve static files
+function serve_static_file(filename::String)
     frontend_dir = joinpath(dirname(@__DIR__), "frontend")
-    file_path = joinpath(frontend_dir, path)
+    file_path = joinpath(frontend_dir, filename)
     
     # Security: prevent directory traversal attacks
     real_path = abspath(file_path)
@@ -391,6 +391,23 @@ end
     else
         return HTTP.Response(404, "Not found")
     end
+end
+
+# Serve common static files
+@get "/app.js" function()
+    serve_static_file("app.js")
+end
+
+@get "/style.css" function()
+    serve_static_file("style.css")
+end
+
+@get "/index.html" function()
+    serve_static_file("index.html")
+end
+
+@get "/{filename}" function(filename)
+    serve_static_file(filename)
 end
 
 # Used for local development with frontend running on a different port
