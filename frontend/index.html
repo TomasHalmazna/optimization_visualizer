@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimization Algorithm Visualizer</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Optimization Algorithm Visualizer</h1>
+    
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <div class="loading-text" id="loadingText">Optimizing... Please wait</div>
+        </div>
+    </div>
+    
+    <div class="panel">
+        <div class="flex-row">
+            <div class="flex-col">
+                <label for="functionSelect"><strong>Test Function:</strong></label>
+                <button class="btn-info" onclick="showInfoModal('function')">ⓘ Info / Formula</button><br>
+                <select id="functionSelect" style="width: 100%;">
+                    <option value="rosenbrock">Rosenbrock (N-Dimensional)</option>
+                    <option value="ackley">Ackley (N-Dimensional)</option>
+                    <option value="sphere">Axis Parallel Hyper-Ellipsoid (N-Dimensional)</option>
+                    <option value="himmelblau">Himmelblau (2D Only)</option>
+                    <option value="beale">Beale (2D Only)</option>
+                    <option value="booth">Booth (2D Only)</option>
+                    <option value="goldstein_price">Goldstein-Price (2D Only)</option>
+                    <option value="matyas">Matyas (2D Only)</option>
+                    <option value="levi_n13">Lévi N.13 (2D Only)</option>
+                    <option value="three_hump_camel">Three-Hump Camel (2D Only)</option>
+                    <option value="custom">Custom (User Defined)</option>
+                </select>
+                
+                <div id="customGroup" class="hidden" style="margin-top: 10px;">
+                    <label><strong>Formula (Julia/AD):</strong></label>
+                    <input type="text" id="customFormula" style="width: 100%;" placeholder="e.g. sin(x[1]) + x[2]^2">
+                    <small style="color: #666;">Use x[1], x[2], etc. Exact derivatives via Automatic Differentiation.</small>
+                </div>
+                
+                <div id="dimensionGroup" style="margin-top: 15px;">
+                    <label for="dimInput"><strong>Dimensions (N):</strong></label>
+                    <input type="number" id="dimInput" value="2" min="2" max="10" step="1">
+                </div>
+            </div>
+
+            <div class="flex-col">
+                <label><strong>Starting Point (x₀):</strong></label>
+                <small style="display: block; color: #d9534f; margin-bottom: 5px;">⚠ Ensure initial point is within the function's domain.</small>
+                <div id="x0Inputs" class="dim-inputs"></div>
+
+                <div id="plotAxesGroup" style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee;">
+                    <label><strong>2D Plot Slice (Axes):</strong></label><br>
+                    <div style="display: inline-block; margin-right: 15px;">
+                        X-Axis: <select id="axisX"></select>
+                    </div>
+                    <div style="display: inline-block;">
+                        Y-Axis: <select id="axisY"></select>
+                    </div>
+                    <br>
+                    <label style="margin-top: 10px; display: inline-block;">
+                        <input type="checkbox" id="equalAxesCb"> <strong>Equal Axes</strong>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="flex-row">
+            <div class="flex-col">
+                <div class="control-group">
+                    <label for="methodSelect"><strong>Optimization Method:</strong></label><br>
+                    <select id="methodSelect" style="width: 100%;">
+                        <option value="sd">Steepest Descent</option>
+                        <option value="cg">Conjugate Gradient</option>
+                        <option value="newton">Newton's Method (Damped)</option>
+                        <option value="dfp">DFP (Quasi-Newton)</option>
+                        <option value="bfgs">BFGS (Quasi-Newton)</option>
+                        <option value="lbfgs">L-BFGS (Limited Memory)</option>
+                    </select>
+                </div>
+
+                <div class="control-group hidden" id="cgVariantGroup">
+                    <label for="cgVariantSelect"><strong>CG Variant:</strong></label><br>
+                    <select id="cgVariantSelect" style="width: 100%;">
+                        <option value="PR_plus">Polak-Ribière+ (PR+)</option>
+                        <option value="PR">Polak-Ribière (PR)</option>
+                        <option value="FR">Fletcher-Reeves (FR)</option>
+                    </select>
+                </div>
+
+                <div class="control-group hidden" id="lbfgsOptionsGroup">
+                    <label for="mInput"><strong>Memory size (m):</strong></label><br>
+                    <input type="number" id="mInput" value="5" min="1" step="1">
+                </div>
+            </div>
+
+            <div class="flex-col">
+                <div class="control-group">
+                    <label for="lsSelect"><strong>Line Search Method:</strong></label><br>
+                    <select id="lsSelect" style="width: 100%;">
+                        <option value="backtracking">Backtracking (Inexact)</option>
+                        <option value="gss">Golden Section Search (Exact)</option>
+                        <option value="dichotomous">Dichotomous Search (Exact)</option>
+                        <option value="quadratic">Quadratic Fit Search (Exact)</option>
+                        <option value="brent">Brent's Method (Exact)</option>
+                    </select>
+                </div>
+
+                <div class="control-group hidden" id="exactLsOptionsGroup">
+                    <label>
+                        <input type="checkbox" id="autoBracketCb" checked> 
+                        <strong>Use Auto Bracketing</strong>
+                    </label>
+                    <div id="manualIntervalDiv" class="hidden" style="margin-top: 5px;">
+                        a: <input type="number" id="bracketA" value="0.0" step="0.1">
+                        b: <input type="number" id="bracketB" value="1.0" step="0.1">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="flex-row">
+            <div class="flex-col">
+                <div class="control-group">
+                    <label for="termSelect"><strong>Primary Termination Criterion:</strong></label>
+                    <button class="btn-info" onclick="showInfoModal('termination')">ⓘ Details</button><br>
+                    <select id="termSelect" style="width: 100%;">
+                        <option value="gradient">Gradient Magnitude (||∇f|| &lt; ε)</option>
+                        <option value="step_size">Step Size Tolerance (||Δx|| &lt; ε)</option>
+                        <option value="f_abs">Absolute Improvement (|Δf| &lt; ε)</option>
+                        <option value="f_rel">Relative Improvement (|Δf| &lt; ε|f|)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex-col">
+                <div class="control-group" style="display: flex; gap: 15px;">
+                    <div>
+                        <label for="tolInput"><strong>Tolerance (ε):</strong></label><br>
+                        <input type="text" id="tolInput" value="1e-4" style="width: 100px;">
+                    </div>
+                    <div>
+                        <label for="maxIterInput"><strong>Max Iterations (k_max):</strong></label><br>
+                        <input type="number" id="maxIterInput" value="2000" min="10" step="100" style="width: 100px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="runBtn" class="btn-run">Run Optimization</button>
+    </div>
+
+    <div id="resultsPanel" class="results-panel hidden">
+        <h3 style="margin-top: 0;">Optimization Results</h3>
+        <p style="font-size: 18px; margin-bottom: 5px;"><strong>Total Iterations: <span id="iterCount">0</span></strong></p>
+        
+        <div id="divergenceWarning" class="warning-box hidden">
+            <div>⚠️ DIVERGENCE DETECTED</div>
+            <div id="divergenceDetails" class="divergence-details"></div>
+        </div>
+        
+        <label style="display: block; margin-top: 15px; font-weight: bold;">
+            <input type="checkbox" id="logScaleCb" checked> Use Logarithmic Y-Axis for Evolution Plots
+        </label>
+        <small style="color: #666; margin-bottom: 10px; display: block;">Tip: Click the 🔍 icon on any plot to enlarge it.</small>
+
+        <div class="plots-grid">
+            <div class="plot-card">
+                <span class="enlarge-icon" onclick="enlargePlot('fPlotDiv', 'Function Value Evolution')">🔍</span>
+                <h4><i>f(x<sub>k</sub>)</i></h4>
+                <div id="fPlotDiv" class="mini-plot"></div>
+            </div>
+            <div class="plot-card">
+                <span class="enlarge-icon" onclick="enlargePlot('gradPlotDiv', 'Gradient Norm Evolution')">🔍</span>
+                <h4>||∇<i>f(x<sub>k</sub>)</i>||</h4>
+                <div id="gradPlotDiv" class="mini-plot"></div>
+            </div>
+            <div class="plot-card">
+                <span class="enlarge-icon" onclick="enlargePlot('alphaPlotDiv', 'Step Size Evolution')">🔍</span>
+                <h4><i>α<sub>k</sub></i></h4>
+                <div id="alphaPlotDiv" class="mini-plot"></div>
+            </div>
+            <div class="plot-card">
+                <span class="enlarge-icon" onclick="enlargePlot('distPlotDiv', 'Step Distance Evolution')">🔍</span>
+                <h4>||<i>x<sub>k+1</sub> - x<sub>k</sub></i>||</h4>
+                <div id="distPlotDiv" class="mini-plot"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="plotDiv"></div>
+
+    <div id="previewModal" class="modal">
+        <div class="modal-content" style="text-align: center;">
+            <h3>Confirm Function Definition</h3>
+            <div id="latexPreview" class="formula-box" style="font-size: 20px;"></div>
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
+                <button onclick="closePreview()" style="background: #666;">Edit Formula</button>
+                <button onclick="startOptimization()" style="background: #28a745;">Approve & Run</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="plotEnlargeModal" class="modal">
+        <div class="plot-modal-content">
+            <span class="close" onclick="closePlotModal()">&times;</span>
+            <h2 id="plotEnlargeTitle" style="margin-top: 0; text-align: center;">Plot</h2>
+            <div id="enlargedPlotDiv" style="flex: 1; width: 100%; height: 100%;"></div>
+        </div>
+    </div>
+
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Details</h2>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
