@@ -406,10 +406,6 @@ end
     serve_static_file("index.html")
 end
 
-@get "/{filename}" function(filename)
-    serve_static_file(filename)
-end
-
 # Used for local development with frontend running on a different port
 #println("Starting server at http://127.0.0.1:8080 ...")
 #serve(port=8080, middleware=[cors_middleware])
