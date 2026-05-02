@@ -21,34 +21,35 @@ A production-ready optimization algorithm visualizer for exploring and comparing
 - Press `Win + R`, type `cmd`, and press Enter
 - Or search for "Command Prompt" in Start menu
 
-#### 3. Navigate to the app folder
+#### 3. Navigate to the backend folder
 ```cmd
-cd path\to\optimization_visualizer
+cd path\to\optimization_visualizer\backend
 ```
 
 **Example:**
 ```cmd
-cd C:\Users\YourUsername\Desktop\optimization_visualizer
+cd C:\Users\YourUsername\Desktop\optimization_visualizer\backend
 ```
 
 #### 4. Start the server
 ```cmd
-cd backend
-julia --project=. -e "using Pkg; Pkg.instantiate(); include(\"server.jl\")"
+julia --project=. server.jl
 ```
 
 #### 5. You should see output like:
 ```
-[ Info: Listening on: 127.0.0.1:8000, thread id: 1
+Starting production server on port 8080...
 ```
 
-When you see this, the server is **running and ready**.
+When you see this message, the server is **running and ready**.
 
 #### 6. Open your browser
-Navigate to: **http://localhost:8000**
+Navigate to: **http://localhost:8080**
 
 #### 7. To stop the server
 Press `Ctrl+C` in the command prompt
+
+**Note**: First run takes 2-5 minutes (packages downloading). Subsequent runs take ~30-60 seconds.
 
 ---
 
@@ -66,40 +67,41 @@ brew install julia
 
 #### 2. Open Terminal
 
-#### 3. Navigate to the app folder
+#### 3. Navigate to the backend folder
 ```bash
-cd /path/to/optimization_visualizer
+cd /path/to/optimization_visualizer/backend
 ```
 
 **Example:**
 ```bash
-cd ~/Downloads/optimization_visualizer
+cd ~/Downloads/optimization_visualizer/backend
 ```
 
 #### 4. Start the server
 ```bash
-cd backend
-julia --project=. -e "using Pkg; Pkg.instantiate(); include(\"server.jl\")"
+julia --project=. server.jl
 ```
 
 #### 5. You should see output like:
 ```
-[ Info: Listening on: 127.0.0.1:8000, thread id: 1
+Starting production server on port 8080...
 ```
 
-When you see this, the server is **running and ready**.
+When you see this message, the server is **running and ready**.
 
 #### 6. Open your browser
-Navigate to: **http://localhost:8000**
+Navigate to: **http://localhost:8080**
 
 #### 7. To stop the server
 Press `Ctrl+C` in the terminal
+
+**Note**: First run takes 2-5 minutes (packages downloading). Subsequent runs take ~30-60 seconds.
 
 ## What Happens When You Run the Command
 
 When you execute:
 ```
-julia --project=. -e "using Pkg; Pkg.instantiate(); include(\"server.jl\")"
+julia --project=. server.jl
 ```
 
 Julia will:
@@ -108,25 +110,27 @@ Julia will:
 2. ✅ Read `Manifest.toml` to see required packages
 3. ✅ Download and install packages (first time only, ~2-3 minutes)
 4. ✅ Compile packages (Julia compiles to native code)
-5. ✅ Start the web server on `http://localhost:8000`
+5. ✅ Run server.jl and start the web server
 
-**First run**: Takes 2-5 minutes (downloading ~500 MB of packages)
-**Subsequent runs**: Takes 30-60 seconds (just loading)
+**First run**: Takes 3-5 minutes total (downloading, compiling, and starting)
+**Subsequent runs**: Takes 30-60 seconds (just loading and starting)
 
 You'll see output like:
 ```
- _       _ _(_)_     |  Documentation: https://docs.julialang.org
-|_)(_) (_) (_)(_|_|_|  
-Other available revisions are available in default startup file
+   _       _ _(_)_     |  Documentation: https://docs.julialang.org
+  (_)     | (_) (_)    |
+   _ _   _| |_  __ _   |  Type `?help` (and press enter) for help.
+  | | | | | | |/ _` |  |
+  | | |_| | | | (_| |  |  Version 1.10.2 (2024-02-13)
+ _/ |\__'_|_|_|\__'_|  |  Official https://julialang.org release
+|__/                   |
 
-[ Info: Downloading: https://github.com/...
-[ Info: Downloading: https://github.com/...
-[ Info: Precompiling project...
-...
-[ Info: Listening on: 127.0.0.1:8000, thread id: 1
+Starting production server on port 8080...
 ```
 
-**When you see `[ Info: Listening on: 127.0.0.1:8000`, the server is ready!**
+**When you see `Starting production server on port 8080...`, the server is ready!**
+
+Open your browser and navigate to: **http://localhost:8080**
 
 ---
 

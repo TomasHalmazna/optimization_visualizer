@@ -12,19 +12,21 @@ An interactive web application for exploring and comparing various mathematical 
 Open Command Prompt and run:
 ```cmd
 cd path\to\optimization_visualizer\backend
-julia --project=. -e "using Pkg; Pkg.instantiate(); include(\"server.jl\")"
+julia --project=. server.jl
 ```
 
-Then open your browser to: **http://localhost:8000**
+Then open your browser to: **http://localhost:8080**
 
 ### Mac/Linux
 Open Terminal and run:
 ```bash
 cd path/to/optimization_visualizer/backend
-julia --project=. -e "using Pkg; Pkg.instantiate(); include(\"server.jl\")"
+julia --project=. server.jl
 ```
 
-Then open your browser to: **http://localhost:8000**
+Then open your browser to: **http://localhost:8080**
+
+**Note**: First run takes 2-5 minutes. Subsequent runs take 30-60 seconds.
 
 ## 📖 Detailed Setup & Troubleshooting
 
