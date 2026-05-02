@@ -1,0 +1,49 @@
+# Julia
+*.jl.swp
+*.jl.swo
+*~
+.DS_Store
+
+# Julia build artifacts
+deps/deps.jl
+deps/usr/
+build/
+
+# Julia package manager
+Manifest.toml.bak
+*.manifest
+
+# Julia REPL artifacts
+.julia/
+*.jl.mem
+
+# System files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# IDE
+*.code-workspace
+.vscode/settings.json
+
+# Logs
+*.log
+
+# Node (frontend dependencies if added later)
+node_modules/
+package-lock.json
+yarn.lock
+
+# OS
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
+*.o
+*.a
