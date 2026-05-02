@@ -4,20 +4,31 @@ An interactive web application for exploring and comparing various mathematical 
 
 ## 🚀 Quick Start
 
+### Prerequisites
+- Julia 1.10+ (download from [julialang.org](https://julialang.org/downloads/))
+- Any modern web browser
+
 ### Windows
-```bash
-Double-click: setup.bat
+Open Command Prompt and run:
+```cmd
+cd path\to\optimization_visualizer\backend
+julia --project=. -e "using Pkg; Pkg.instantiate(); include(\"server.jl\")"
 ```
+
+Then open your browser to: **http://localhost:8000**
 
 ### Mac/Linux
+Open Terminal and run:
 ```bash
-chmod +x setup.sh
-./setup.sh
+cd path/to/optimization_visualizer/backend
+julia --project=. -e "using Pkg; Pkg.instantiate(); include(\"server.jl\")"
 ```
 
-## 📖 Full Documentation
+Then open your browser to: **http://localhost:8000**
 
-See **[SETUP.md](SETUP.md)** for detailed setup instructions and troubleshooting.
+## 📖 Detailed Setup & Troubleshooting
+
+See **[SETUP.md](SETUP.md)** for detailed setup instructions, expected output, and troubleshooting.
 
 ## 📋 Features
 
