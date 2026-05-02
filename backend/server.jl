@@ -347,6 +347,51 @@ function cors_middleware(handler)
     end
 end
 
+# Serve static files from frontend directory (for local deployment)
+@get "/" function()
+    frontend_path = joinpath(dirname(@__DIR__), "frontend", "index.html")
+    if isfile(frontend_path)
+        return HTTP.Response(200, ["Content-Type" => "text/html"], read(frontend_path))
+    else
+        return HTTP.Response(404, "Frontend not found")
+    end
+end
+
+@get "/{path...}" function(path)
+    # Handle static files (CSS, JS, etc.)
+    frontend_dir = joinpath(dirname(@__DIR__), "frontend")
+    file_path = joinpath(frontend_dir, path)
+    
+    # Security: prevent directory traversal attacks
+    real_path = abspath(file_path)
+    real_frontend = abspath(frontend_dir)
+    if !startswith(real_path, real_frontend)
+        return HTTP.Response(403, "Access denied")
+    end
+    
+    if isfile(file_path)
+        # Determine content type based on file extension
+        ext = lowercase(splitext(file_path)[2])
+        content_type = if ext == ".html"
+            "text/html"
+        elseif ext == ".css"
+            "text/css"
+        elseif ext == ".js"
+            "application/javascript"
+        elseif ext == ".json"
+            "application/json"
+        elseif ext == ".png"
+            "image/png"
+        elseif ext == ".jpg" || ext == ".jpeg"
+            "image/jpeg"
+        else
+            "application/octet-stream"
+        end
+        return HTTP.Response(200, ["Content-Type" => content_type], read(file_path))
+    else
+        return HTTP.Response(404, "Not found")
+    end
+end
 
 # Used for local development with frontend running on a different port
 #println("Starting server at http://127.0.0.1:8080 ...")

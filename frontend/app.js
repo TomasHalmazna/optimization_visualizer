@@ -1,15 +1,22 @@
 // app.js
 
+// Determine API base URL based on whether we're running locally or on Render
+// If running on localhost/127.0.0.1, use local backend (port 8080)
+// Otherwise, use the Render production URL
+const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? `http://${window.location.hostname}:8080`
+    : "https://optimization-app-wkcn.onrender.com";
+
 const functionSelect = document.getElementById('functionSelect');
 const dimInput = document.getElementById('dimInput');
 const x0Inputs = document.getElementById('x0Inputs');
 const axisX = document.getElementById('axisX');
 const axisY = document.getElementById('axisY');
 const plotDiv = document.getElementById('plotDiv');
-const API_BASE_URL = "https://optimization-app-wkcn.onrender.com"; // backend server url
+
 let debounceTimer;
 
-// --- COLD-START detection ---
+// --- COLD-START detection (only for Render, not for local) ---
 let coldStartTimer;
 let lastServerInteraction = 0; // Čas posledního úspěšného spojení (v milisekundách)
 
@@ -22,12 +29,16 @@ function showLoading(baseText) {
     
     clearTimeout(coldStartTimer);
     
-    // Render sleeps after approximately 15 minutes of inactivity
-    // We assume that if the last interaction was more than 10 minutes ago, 
-    // we might be facing a cold start, so we show the message after a short delay
-    const timeSinceLastInteraction = Date.now() - lastServerInteraction;
+    // Cold start detection only applies to Render deployment, not local
+    const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
     
-    if (timeSinceLastInteraction > 600000) {
+    if (!isLocal) {
+        // Render sleeps after approximately 15 minutes of inactivity
+        // We assume that if the last interaction was more than 10 minutes ago, 
+        // we might be facing a cold start, so we show the message after a short delay
+        const timeSinceLastInteraction = Date.now() - lastServerInteraction;
+        
+        if (timeSinceLastInteraction > 600000) {
         coldStartTimer = setTimeout(() => {
             loadingText.innerHTML = `${baseText}<br><br>
                 <span style="font-size: 14px; color: #005A9E; font-weight: normal; max-width: 400px; display: inline-block; margin-top: 10px; line-height: 1.4;">
@@ -36,6 +47,7 @@ function showLoading(baseText) {
                     This initial start may take <b>up to 3 minutes</b>. Subsequent requests will be instant!
                 </span>`;
         }, 3500);
+        }
     }
 }
 
