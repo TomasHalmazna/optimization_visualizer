@@ -50,7 +50,7 @@ See [SETUP.md](SETUP.md) for comprehensive setup instructions and troubleshootin
 
 ## Features
 
-- 10+ built-in test functions (Rosenbrock, Ackley, Sphere, Himmelblau, etc.)
+- 10 built-in test functions (Rosenbrock, Ackley, Sphere, Himmelblau, etc.)
 - 6 optimization methods (Steepest Descent, Conjugate Gradient, Newton's Method, DFP, BFGS, L-BFGS)
 - 5 line search strategies (Backtracking, Golden Section Search, Brent's Method, Dichotomous Search, Quadratic Fit)
 - 2D interactive contour plots with trajectory visualization
