@@ -2,7 +2,8 @@
 
 ## Prerequisites
 
-- Julia 1.10 or higher
+- **Juliaup** (The official Julia version manager)
+- **Julia 1.10.2** (Specifically required to ensure package compatibility)
 - Any modern web browser
 - Approximately 1 GB disk space for first-time package installation
 - Internet connection (required for initial package download)
@@ -13,7 +14,7 @@
 
 **Option A: Using Git**
 ```bash
-git clone https://github.com/TomasHalmazna/optimization_visualizer.git
+git clone [https://github.com/TomasHalmazna/optimization_visualizer.git](https://github.com/TomasHalmazna/optimization_visualizer.git)
 cd optimization_visualizer
 ```
 
@@ -23,16 +24,19 @@ cd optimization_visualizer
 3. Select "Download ZIP"
 4. Extract the downloaded file
 
-### Step 2: Install Julia
+### Step 2: Install Julia Environment
 
-If not already installed:
-- Download from https://julialang.org/downloads/
-- Install following the official instructions
-- Verify installation by opening a terminal and running: `julia --version`
+To ensure strict version compatibility, use the official Julia version manager (`juliaup`):
+
+1. Install Julia via the official instructions at https://julialang.org/downloads/
+2. Open your terminal or command prompt and install the specific version required by this project:
+   ```bash
+   juliaup add 1.10.2
+   ```
 
 ### Step 3: Navigate to Backend Directory
 
-**Windows (Command Prompt):**
+**Windows (Command Prompt / PowerShell):**
 ```cmd
 cd optimization_visualizer\backend
 ```
@@ -44,18 +48,19 @@ cd optimization_visualizer/backend
 
 ### Step 4: Start the Server
 
-```
-julia --project=. server.jl
+Run the server using the explicitly installed version of Julia. This command will automatically resolve and download all required dependencies on the first run:
+```bash
+julia +1.10.2 --project=. server.jl
 ```
 
 ## Expected Output
 
 You should see:
 
-```
+```text
 Activating project at `...optimization_visualizer/backend`
 Starting production server on port 8080...
-Started server: http://0.0.0.0:8080
+Started server: [http://0.0.0.0:8080](http://0.0.0.0:8080)
 Listening on: 0.0.0.0:8080, thread id: 1
 ```
 
@@ -65,7 +70,7 @@ When this message appears, the server is ready.
 
 Open your web browser and navigate to:
 
-```
+```text
 http://localhost:8080
 ```
 
@@ -86,37 +91,29 @@ Press `Ctrl+C` in the terminal where the server is running.
 
 ## Troubleshooting
 
-### Julia is not installed or not in PATH
+### Version Conflict / Unsatisfiable Requirements
 
-Verify Julia is in your system PATH:
+If you attempt to run the project using a newer version of Julia (e.g., 1.12.x) without the `+1.10.2` flag, you may encounter an "Unsatisfiable requirements" error related to standard libraries like `Statistics`. 
 
+**Solution A (Recommended):** Use `juliaup` to install and run version 1.10.2 as described in Step 2 and 4.
+
+**Solution B (Force upgrade):** If you *must* use a newer version of Julia, you need to delete the lockfile to let Julia resolve new dependencies:
+1. Delete the `Manifest.toml` file inside the `backend` folder.
+2. Run `julia --project=. server.jl` again. Julia will generate a fresh manifest compatible with your current version.
+
+### Julia or Juliaup is not installed
+
+Verify the installation:
+```bash
+juliaup status
 ```
-julia --version
-```
-
-If this command is not found, install Julia from https://julialang.org/downloads/
-
-**Windows:** Ensure "Add Julia to PATH" is checked during installation. Restart terminal after installation.
-
-**Mac/Linux:** Follow the official installation guide at https://docs.julialang.org/en/v1/manual/getting-started/
-
-### Package installation failed
-
-Ensure you have:
-- A working internet connection
-- At least 1 GB of free disk space
-- Write permissions to the installation directory
-
-Retry the command:
-```
-julia --project=. server.jl
-```
+If this command is not found, ensure you installed Julia via the default instructions on julialang.org, which includes `juliaup`. Restart your terminal after installation.
 
 ### Port 8080 is already in use
 
 Another application is using port 8080. Either:
 - Close the other application
-- Or stop any previous instance of this server (Ctrl+C)
+- Or stop any previous instance of this server (`Ctrl+C`)
 
 ### Server starts but browser shows "Cannot connect"
 
@@ -130,13 +127,8 @@ Another application is using port 8080. Either:
 2. Check the browser console for errors (F12)
 3. Verify all files loaded: app.js, style.css
 
-### Module not found errors
-
-Ensure you are in the `backend` folder and try running the command again. Julia may need time to download and compile packages on first run.
-
 ## File Structure
-
-```
+```text
 optimization_visualizer/
 ├── backend/
 │   ├── server.jl              # Main server entry point
@@ -157,9 +149,9 @@ optimization_visualizer/
 │       ├── DichotomousSearch.jl
 │       └── QuadraticFitSearch.jl
 ├── frontend/
-│   ├── index.html            # Main page
-│   ├── app.js                # JavaScript application logic
-│   └── style.css             # Styling
+│   ├── index.html             # Main page
+│   ├── app.js                 # JavaScript application logic
+│   └── style.css              # Styling
 ├── README.md
 ├── SETUP.md
 └── DOCUMENTATION.md
@@ -170,7 +162,7 @@ optimization_visualizer/
 | Component | Requirement |
 |-----------|-------------|
 | Operating System | Windows, Mac, or Linux |
-| Julia | 1.10.2 or higher |
+| Julia | Exactly 1.10.2 via juliaup (or require Manifest deletion for newer versions) |
 | Memory | 512 MB minimum, 1-2 GB recommended |
 | Disk Space | Approximately 1 GB for packages |
 | Internet | Required for initial setup only |
