@@ -14,7 +14,7 @@
 
 **Option A: Using Git**
 ```bash
-git clone [https://github.com/TomasHalmazna/optimization_visualizer.git](https://github.com/TomasHalmazna/optimization_visualizer.git)
+git clone https://github.com/TomasHalmazna/optimization_visualizer.git
 cd optimization_visualizer
 ```
 
@@ -60,7 +60,7 @@ You should see:
 ```text
 Activating project at `...optimization_visualizer/backend`
 Starting production server on port 8080...
-Started server: [http://0.0.0.0:8080](http://0.0.0.0:8080)
+Started server: http://0.0.0.0:8080
 Listening on: 0.0.0.0:8080, thread id: 1
 ```
 
@@ -68,9 +68,8 @@ When this message appears, the server is ready.
 
 ## Accessing the Application
 
-Open your web browser and navigate to:
-
-```text
+Open your web browser and navigate to: 
+```
 http://localhost:8080
 ```
 
